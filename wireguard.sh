@@ -182,9 +182,10 @@ generate_qr_code() {
 
     # Send QR code image and configuration to Discord
     message="New user added: $USERNAME
-	Timestamp: $TIMESTAMP
- Configuration:
-	$(sudo cat $config_file)"
+Timestamp: $TIMESTAMP
+Configuration:
+$(sudo cat $config_file)"
+
     send_discord_notification_with_qr "$message" "$qr_image" "$USERNAME"
 }
 
