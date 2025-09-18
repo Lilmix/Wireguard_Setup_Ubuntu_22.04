@@ -112,7 +112,7 @@ add_single_user() {
     CLIENT_CONF="/etc/wireguard/${USERNAME}.conf"
     CLIENT_PRIVATE_KEY=$(wg genkey)
     CLIENT_PUBLIC_KEY=$(echo $CLIENT_PRIVATE_KEY | wg pubkey)
-    CLIENT_IP="10.0.0.$((100 + $(wg show | grep allowed | wc -l)))"
+    CLIENT_IP="10.135.0.$((100 + $(wg show | grep allowed | wc -l)))"
     TIMESTAMP=$(date)
 
     # Ensure the server public key is set
@@ -239,7 +239,7 @@ generate_qr_for_existing_user() {
 remove_user() {
     echo "Existing users:"
     echo "------------------------------------------------------------"
-    grep 'Address = ' /etc/wireguard/*.conf | awk -F'[:= ]+' '{print $1 " - " $NF}' | grep -v '10.0.0.1/24' | sed 's/\/etc\/wireguard\///;s/\.conf//'
+    grep 'Address = ' /etc/wireguard/*.conf | awk -F'[:= ]+' '{print $1 " - " $NF}' | grep -v '10.135.0.1/24' | sed 's/\/etc\/wireguard\///;s/\.conf//'
     echo "------------------------------------------------------------"
     read -p "Enter username to remove: " USERNAME
     CLIENT_CONF="/etc/wireguard/${USERNAME}.conf"
@@ -353,7 +353,7 @@ delete_wireguard() {
         echo "Removing iptables rules..."
         sudo iptables -D FORWARD -i $INTERFACE -j ACCEPT
         sudo iptables -D FORWARD -o $INTERFACE -j ACCEPT
-        sudo iptables -t nat -D POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
+        sudo iptables -t nat -D POSTROUTING -s 10.135.0.0/24 -o eth0 -j MASQUERADE
         sudo sh -c "iptables-save > /etc/iptables/rules.v4"
 
         echo "WireGuard has been completely removed."
@@ -409,7 +409,7 @@ install_wireguard() {
 
     # Server configuration
     SERVER_CONF="/etc/wireguard/wg0.conf"
-    SERVER_IP="10.0.0.1"
+    SERVER_IP="10.135.0.1"
 
     echo "Configuring WireGuard server on port $SERVER_PORT..."
     sudo mkdir -p /etc/wireguard
@@ -435,12 +435,15 @@ EOL
         sudo ufw allow OpenSSH
         sudo ufw enable
     fi
+    
+    # get the interface used for internet
+    $internet_interface=ip route get "1.1.1.1" | grep -Po '(?<=(dev ))(\S+)'
 
     # Add iptables rules for NAT
     echo "Configuring iptables firewall..."
     sudo iptables -A FORWARD -i $INTERFACE -j ACCEPT
     sudo iptables -A FORWARD -o $INTERFACE -j ACCEPT
-    sudo iptables -t nat -A POSTROUTING -s 10.0.0.0/24 -o eth0 -j MASQUERADE
+    sudo iptables -t nat -A POSTROUTING -s 10.135.0.0/24 -o $internet_interface -j MASQUERADE
 
     # Save iptables rules
     sudo sh -c "iptables-save > /etc/iptables/rules.v4"
