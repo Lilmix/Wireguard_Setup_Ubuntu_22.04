@@ -342,7 +342,7 @@ delete_wireguard() {
     if [ "$confirm" == "YES" ]; then
     
 		# get the interface used for internet
-		$internet_interface=ip route get "1.1.1.1" | grep -Po '(?<=(dev ))(\S+)'
+		internet_interface=$(ip route get "1.1.1.1" | grep -Po '(?<=(dev ))(\S+)')
 		
         echo "Stopping WireGuard service..."
         sudo wg-quick down $INTERFACE
@@ -441,7 +441,7 @@ EOL
     fi
     
     # get the interface used for internet
-    $internet_interface=ip route get "1.1.1.1" | grep -Po '(?<=(dev ))(\S+)'
+    internet_interface=$(ip route get "1.1.1.1" | grep -Po '(?<=(dev ))(\S+)')
 
     # Add iptables rules for NAT
     echo "Configuring iptables firewall..."
