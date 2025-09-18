@@ -59,8 +59,9 @@ select_dns() {
     echo "------------------------------------------------------------"
     echo "Select DNS for the client:"
     echo "1) Use Cloudflare DNS (1.1.1.1)"
-    echo "2) Use Google DNS (8.8.8.8)"
-    echo "3) Use custom DNS"
+    echo "2) Use Quad9 DNS (9.9.9.9)"
+    echo "3) Use Google DNS (8.8.8.8)"
+    echo "4) Use custom DNS"
     echo "------------------------------------------------------------"
     read -p "Enter your choice: " dns_choice
     
@@ -69,14 +70,17 @@ select_dns() {
             CLIENT_DNS="1.1.1.1"
             ;;
         2)
-            CLIENT_DNS="8.8.8.8"
+            CLIENT_DNS="9.9.9.9"
             ;;
         3)
+            CLIENT_DNS="8.8.8.8"
+            ;;
+        4)
             read -p "Enter custom DNS: " CLIENT_DNS
             ;;
         *)
-            echo "Invalid option. Defaulting to Google DNS (8.8.8.8)."
-            CLIENT_DNS="8.8.8.8"
+            echo "Invalid option. Defaulting to Quad9 DNS (9.9.9.9)."
+            CLIENT_DNS="9.9.9.9"
             ;;
     esac
 }
@@ -208,7 +212,7 @@ send_discord_notification_with_qr() {
         "$DISCORD_WEBHOOK")
 
     # Check the response status code
-    if [ "$response" -ne 204 ]; then
+    if [ "$response" -ne 200 ]; then
         echo "Error: Failed to send QR code to Discord (HTTP status: $response)."
         return 1
     fi
@@ -369,6 +373,14 @@ install_wireguard() {
     echo "------------------------------------------------------------"
     sudo apt-get update
     sudo apt-get upgrade -y
+
+    # Install jq if it's not already installed
+    if ! command_exists wg; then
+        echo "Installing jq..."
+        sudo apt-get install -y jq
+    else
+        echo "jq is already installed."
+    fi
 
     # Install WireGuard if it's not already installed
     if ! command_exists wg; then
