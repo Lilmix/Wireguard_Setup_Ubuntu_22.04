@@ -340,6 +340,10 @@ delete_wireguard() {
     echo "WARNING: This will delete WireGuard installation and all configurations. This cannot be undone."
     read -p "Are you sure you want to proceed? Type 'YES' to confirm: " confirm
     if [ "$confirm" == "YES" ]; then
+    
+		# get the interface used for internet
+		$internet_interface=ip route get "1.1.1.1" | grep -Po '(?<=(dev ))(\S+)'
+		
         echo "Stopping WireGuard service..."
         sudo wg-quick down $INTERFACE
         sudo systemctl disable wg-quick@$INTERFACE
@@ -353,7 +357,7 @@ delete_wireguard() {
         echo "Removing iptables rules..."
         sudo iptables -D FORWARD -i $INTERFACE -j ACCEPT
         sudo iptables -D FORWARD -o $INTERFACE -j ACCEPT
-        sudo iptables -t nat -D POSTROUTING -s 10.135.0.0/24 -o eth0 -j MASQUERADE
+        sudo iptables -t nat -D POSTROUTING -s 10.135.0.0/24 -o $internet_interface -j MASQUERADE
         sudo sh -c "iptables-save > /etc/iptables/rules.v4"
 
         echo "WireGuard has been completely removed."
