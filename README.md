@@ -3,7 +3,6 @@
 # WireGuard Configurator
 
 This is a comprehensive bash script for managing a WireGuard VPN server. The script allows you to install WireGuard, configure the server, manage users, and generate QR codes for easy client configuration.
-https://wireguardinstaller.com/
 
 ## Features
 
@@ -23,13 +22,13 @@ You can quickly set up WireGuard on your Ubuntu 22.04 server by running the foll
 ### Using `curl`:
 
 ```bash
-curl -O https://raw.githubusercontent.com/Mailootje/Wireguard_Setup_Ubuntu_22.04/main/wireguard.sh && chmod +x wireguard.sh && ./wireguard.sh
+curl -O https://raw.githubusercontent.com/Lilmix/Wireguard_Setup_Ubuntu_22.04/main/wireguard.sh && chmod +x wireguard.sh && ./wireguard.sh
 ```
 
 ### Using `wget`:
 
 ```bash
-wget https://raw.githubusercontent.com/Mailootje/Wireguard_Setup_Ubuntu_22.04/main/wireguard.sh && chmod +x wireguard.sh && ./wireguard.sh
+wget https://raw.githubusercontent.com/Lilmix/Wireguard_Setup_Ubuntu_22.04/main/wireguard.sh && chmod +x wireguard.sh && ./wireguard.sh
 ```
 
 This command will download the script, make it executable, and start the setup process.
