@@ -150,9 +150,6 @@ EOL
     # Generate a QR code for the configuration
     generate_qr_code $CLIENT_CONF
 
-    # Send Discord notification
-    message="New user added: $USERNAME\nTimestamp: $TIMESTAMP\nConfiguration:\n$(cat $CLIENT_CONF)"
-    send_discord_notification_with_qr "$message"
 }
 
 # Function to add users (for initial install)
